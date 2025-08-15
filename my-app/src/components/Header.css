@@ -1,0 +1,26 @@
+header {
+    margin: 0;
+    padding: 0;
+
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid #a3a3a3;
+
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    margin-right: 16px;
+}
+
+header p {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+    color: #cccccc;
+}
