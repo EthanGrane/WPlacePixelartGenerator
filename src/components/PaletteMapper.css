@@ -3,7 +3,8 @@
     display: flex;
     flex-direction: row;
     gap: 20px;
-    flex-wrap: wrap; /* permite que los elementos bajen en pantallas pequeñas */
+    flex-wrap: wrap;
+    /* permite que los elementos bajen en pantallas pequeñas */
     padding: 16px;
 }
 
@@ -13,7 +14,8 @@
     font-size: 32px;
     font-weight: 800;
     width: 50vw;
-    min-width: 280px; /* para móviles */
+    min-width: 280px;
+    /* para móviles */
     margin-top: 64px;
     margin-left: 32px;
 }
@@ -42,7 +44,18 @@
 
 /* Inputs agrupados */
 .input-div {
-    border-radius: 8px;
+    padding: 16px;
+    border-radius: 1rem;
+}
+.input-div label,input,select
+{
+    margin-left: 16px;
+}
+
+.input-title
+{
+    margin: 0 !important;
+    margin-bottom: 16px !important;
 }
 
 /* Contenedor del canvas */
@@ -67,6 +80,11 @@
 .Title {
     margin: 0;
     padding: 0;
+}
+
+.title-div {
+    display: flex;
+    margin-bottom: 64px !important;
 }
 
 label {

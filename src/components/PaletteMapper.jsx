@@ -8,7 +8,7 @@ export default function PaletteMapper() {
     const offscreenRef = useRef(null);
 
     const [imgFile, setImgFile] = useState(null);
-    const [imgURL, setImgURL] = useState("https://media.themoviedb.org/t/p/w227_and_h127_bestv2/rFK1jT4iXRcTuc8AFHvLdpiDDD7.jpg");
+    const [imgURL, setImgURL] = useState('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-91dkS5yPmtDOuQMT7VNF2QLA3iK_SkFl11IDH8eQBWXNO_M__f0T-YL3G1CTPxxu44A');
     const [fileName, setFileName] = useState("");
     const [scale, setScale] = useState(64);
     const [palette, setPalette] = useState("free");
@@ -57,6 +57,13 @@ export default function PaletteMapper() {
         setActivePalette(p);
     };
 
+    const calculateLuminosity = (ctx, x, y, scale) => {
+        const pixel = ctx.getImageData(x * scale, y * scale, 1, 1).data;
+        return 0.2126 * pixel[0] + 0.7152 * pixel[1] + 0.0722 * pixel[2];
+    };
+
+
+
     const handleMouseMove = (e) => {
         if (!canvasRef.current || !offscreenRef.current) return;
         const canvas = canvasRef.current;
@@ -76,19 +83,24 @@ export default function PaletteMapper() {
         for (let y = 0; y < canvas.height; y += pixelScale) {
             const row = Math.floor(y / pixelScale);
             const relativeRow = row - rowIndex;
-            ctx.fillStyle = (relativeRow % 5 === 0)
-                ? (relativeRow % 2 === 0 ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)")
-                : (relativeRow % 2 === 0 ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)");
+            let lum = calculateLuminosity(ctx, colIndex, row, pixelScale);
+            ctx.fillStyle = (relativeRow % 2 === 0)
+                ? "rgba(0,0,0,0)"
+                : (lum < 128 ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)");
+
             ctx.fillRect(colIndex * pixelScale, y, pixelScale, pixelScale);
         }
 
         for (let x = 0; x < canvas.width; x += pixelScale) {
             const col = Math.floor(x / pixelScale);
             const relativeCol = col - colIndex;
-            ctx.fillStyle = (relativeCol % 5 === 0)
-                ? (relativeCol % 2 === 0 ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)")
-                : (relativeCol % 2 === 0 ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)");
+
+            let lum = calculateLuminosity(ctx, col, rowIndex, pixelScale);
+            ctx.fillStyle = (relativeCol % 2 === 0)
+                ? "rgba(0,0,0,0)"
+                : (lum < 128 ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)");
             ctx.fillRect(x, rowIndex * pixelScale, pixelScale, pixelScale);
+
         }
     };
 
@@ -106,23 +118,25 @@ export default function PaletteMapper() {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                <motion.h1
-                    className="Title"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    Pixel Art Palette Mapper
-                </motion.h1>
+                <div className="title-div">
+                    <motion.h1
+                        className="Title"
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Pixel Art Palette Mapper
+                    </motion.h1>
 
-                <motion.h2
-                    className="Title"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    For WPlace
-                </motion.h2>
+                    <motion.h2
+                        className="Title"
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        for WPlace
+                    </motion.h2>
+                </div>
 
                 <motion.div
                     className="input-div"
@@ -130,6 +144,7 @@ export default function PaletteMapper() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                 >
+                    <h3 className="input-title">Options</h3>
                     <input type="file" accept="image/*" onChange={handleFileChange} />
                     <label>Image URL:</label>
                     <input type="text" placeholder="Pega la URL de la imagen" value={imgURL} onChange={handleURLChange} />
@@ -139,7 +154,6 @@ export default function PaletteMapper() {
                         type="number"
                         id="img_scale"
                         value={scale}
-                        whileFocus={{ scale: 1.05 }}
                         onChange={(e) => setScale(Number(e.target.value))}
                     />
 
@@ -147,7 +161,6 @@ export default function PaletteMapper() {
                     <motion.select
                         id="palette"
                         value={palette}
-                        whileHover={{ scale: 1.05 }}
                         onChange={handlePaletteChange}
                     >
                         <option value="free">Free Palette</option>
@@ -173,7 +186,7 @@ export default function PaletteMapper() {
                 className="canvas-container"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1 }}
             >
                 <canvas
                     ref={canvasRef}
