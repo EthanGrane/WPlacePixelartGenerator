@@ -10,6 +10,7 @@ function App() {
       <GradientBackground />
 
       <PaletteMapper />
+
     </div>
   );
 }
