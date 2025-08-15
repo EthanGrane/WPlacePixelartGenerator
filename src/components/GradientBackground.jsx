@@ -11,7 +11,7 @@ export default function GradientBackground() {
           width: '100%',
           height: '100%',
           transform: 'scaleY(-1)',   // voltea verticalmente
-          backgroundImage: "url('/looper-pattern.svg')",
+          backgroundImage: "url('/WPlacePixelartGenerator/looper-pattern.svg')",
           backgroundRepeat: 'repeat',
           backgroundSize: 'auto',
           zIndex: -1

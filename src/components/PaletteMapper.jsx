@@ -1,13 +1,48 @@
-import { useState } from "react";
-import PixelCanvas from "./PixelCanvas";
-import './PaletteMapper.css';
+import { useRef, useState, useEffect } from "react";
+import { processImageCanvas, setActivePalette } from "../utils/PaletteMapper";
+import './PaletteMapper.css'
 
 export default function PaletteMapper() {
+    const canvasRef = useRef(null);
+    const offscreenRef = useRef(null); // para guardar la imagen procesada
+
     const [imgFile, setImgFile] = useState(null);
-    const [imgURL, setImgURL] = useState("https://pbs.twimg.com/media/GR7l-3haMAA_a28.jpg");
+    const [imgURL, setImgURL] = useState("https://media.themoviedb.org/t/p/w227_and_h127_bestv2/rFK1jT4iXRcTuc8AFHvLdpiDDD7.jpg");
+    const [fileName, setFileName] = useState("");
     const [scale, setScale] = useState(64);
     const [palette, setPalette] = useState("free");
+    const [pixelScale, setPixelScale] = useState(1);
     const [useRule, setUseRule] = useState(false);
+
+    // guardar imagen procesada en offscreen
+    useEffect(() => {
+        if (!canvasRef.current) return;
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+
+        img.onload = () => {
+            const canvas = canvasRef.current;
+            if (!offscreenRef.current) offscreenRef.current = document.createElement("canvas");
+            const off = offscreenRef.current;
+
+            processImageCanvas(img, off, scale);
+            canvas.width = off.width;
+            canvas.height = off.height;
+
+            // dibujar imagen inicial
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(off, 0, 0);
+        };
+
+        if (imgFile) {
+            const objectURL = URL.createObjectURL(imgFile);
+            img.src = objectURL;
+            setFileName(imgFile.name);
+        } else if (imgURL) {
+            img.src = imgURL;
+            setFileName("Imagen desde URL");
+        }
+    }, [imgFile, imgURL, scale, palette]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
