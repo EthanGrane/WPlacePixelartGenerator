@@ -1,4 +1,5 @@
 import "./GradientBackground.css";
+import looperPattern from '../public/looper-pattern.svg';
 
 export default function GradientBackground() {
   return (
@@ -11,7 +12,7 @@ export default function GradientBackground() {
           width: '100%',
           height: '100%',
           transform: 'scaleY(-1)',   // voltea verticalmente
-          backgroundImage: "url('/looper-pattern.svg')",
+          backgroundImage: `url(${looperPattern})`,
           backgroundRepeat: 'repeat',
           backgroundSize: 'auto',
           zIndex: -1
